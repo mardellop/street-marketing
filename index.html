@@ -1,0 +1,596 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Pantry Chef — Street Marketing</title>
+  <meta name="description" content="Pantry Chef llega a las calles de Madrid. ¿Estrés por el almuerzo? Entra y te salvamos." />
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800;900&display=swap" rel="stylesheet" />
+  <style>
+    *, *::before, *::after { margin: 0; padding: 0; box-sizing: border-box; }
+
+    :root {
+      --gold:       #C9A84C;
+      --gold-light: #E8C97A;
+      --dark:       #080705;
+    }
+
+    html { scroll-behavior: auto; }
+
+    body {
+      font-family: 'Inter', sans-serif;
+      background: var(--dark);
+      color: #fff;
+      overflow-x: hidden;
+    }
+
+    /* ─── NAVBAR ──────────────────────────────────── */
+    #navbar {
+      position: fixed;
+      inset: 0 0 auto 0;
+      z-index: 200;
+      padding: 22px 48px;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      transition: background 0.6s ease, border-color 0.6s ease;
+      border-bottom: 1px solid transparent;
+    }
+    #navbar.scrolled {
+      background: rgba(8,7,5,0.85);
+      backdrop-filter: blur(24px);
+      -webkit-backdrop-filter: blur(24px);
+      border-color: rgba(201,168,76,0.1);
+    }
+    .nav-brand { display: flex; align-items: center; gap: 10px; text-decoration: none; }
+    .nav-brand-badge {
+      width: 34px; height: 34px;
+      background: linear-gradient(140deg, var(--gold), var(--gold-light));
+      border-radius: 9px;
+      display: flex; align-items: center; justify-content: center;
+      font-size: 17px;
+    }
+    .nav-brand-name { font-size: 17px; font-weight: 800; letter-spacing: -0.4px; color: #fff; }
+    .nav-brand-name span { color: var(--gold); }
+    .nav-links { display: flex; gap: 36px; list-style: none; }
+    .nav-links a {
+      font-size: 13.5px; font-weight: 500;
+      color: rgba(255,255,255,0.6); text-decoration: none;
+      transition: color 0.25s;
+    }
+    .nav-links a:hover { color: #fff; }
+    .nav-pill {
+      background: linear-gradient(135deg, var(--gold), var(--gold-light)) !important;
+      color: var(--dark) !important; font-weight: 700 !important;
+      padding: 9px 24px; border-radius: 100px; font-size: 13px !important;
+      transition: transform 0.2s, box-shadow 0.2s !important;
+    }
+    .nav-pill:hover { color: var(--dark) !important; transform: scale(1.04); box-shadow: 0 8px 40px rgba(201,168,76,0.32); }
+
+    /* ─── HERO ────────────────────────────────────── */
+    #hero {
+      position: relative;
+      height: 100vh;
+      display: flex; align-items: center; justify-content: center;
+      overflow: hidden; background: var(--dark);
+    }
+    .hero-glow {
+      position: absolute; inset: 0;
+      background: radial-gradient(ellipse 60% 55% at 50% 65%, rgba(139,94,60,0.18) 0%, transparent 100%);
+      pointer-events: none;
+    }
+    .hero-text { position: relative; z-index: 2; text-align: center; user-select: none; }
+    .hero-tag {
+      display: inline-block;
+      font-size: 10.5px; font-weight: 700; letter-spacing: 3.5px; text-transform: uppercase;
+      color: var(--gold); padding: 6px 16px;
+      border: 1px solid rgba(201,168,76,0.25); border-radius: 100px;
+      margin-bottom: 28px;
+      opacity: 0; animation: riseIn 0.8s cubic-bezier(0.22,1,0.36,1) 0.3s both;
+    }
+    h1.hero-h1 {
+      font-size: clamp(58px, 8.5vw, 108px);
+      font-weight: 900; line-height: 0.95; letter-spacing: -4px; color: #fff;
+      opacity: 0; animation: riseIn 1s cubic-bezier(0.22,1,0.36,1) 0.55s both;
+    }
+    h1.hero-h1 em {
+      font-style: normal;
+      background: linear-gradient(130deg, var(--gold) 0%, var(--gold-light) 55%, #f5e09a 100%);
+      -webkit-background-clip: text; -webkit-text-fill-color: transparent; background-clip: text;
+    }
+    .hero-sub {
+      margin-top: 28px; font-size: clamp(15px, 1.8vw, 19px); font-weight: 400;
+      color: rgba(255,255,255,0.46); max-width: 480px; margin-left: auto; margin-right: auto;
+      line-height: 1.65; opacity: 0; animation: riseIn 1s cubic-bezier(0.22,1,0.36,1) 0.8s both;
+    }
+    .hero-scroll {
+      position: absolute; bottom: 44px; left: 50%; transform: translateX(-50%);
+      display: flex; flex-direction: column; align-items: center; gap: 10px;
+      opacity: 0; animation: riseIn 1s ease 1.5s both; pointer-events: none; z-index: 2;
+    }
+    .hero-scroll span { font-size: 10px; letter-spacing: 3px; text-transform: uppercase; color: rgba(255,255,255,0.28); }
+    .hero-scroll-dot {
+      width: 1.5px; height: 48px;
+      background: linear-gradient(to bottom, rgba(201,168,76,0.6), transparent);
+      animation: pulseBar 2.2s ease-in-out infinite;
+    }
+    @keyframes pulseBar { 0%,100% { opacity:0.4; transform:scaleY(1); } 50% { opacity:1; transform:scaleY(0.65); } }
+    @keyframes riseIn { from { opacity:0; transform:translateY(24px); } to { opacity:1; transform:translateY(0); } }
+
+    /* ─── ZOOM TRACK (the scroll engine) ─────────── */
+    /*
+      Total height: 700vh
+      The #zoom-stage is sticky so it always fills viewport.
+      JS drives everything based on scroll progress 0→1.
+    */
+    #zoom-track {
+      position: relative;
+      height: 700vh;
+      background: var(--dark);
+    }
+    #zoom-stage {
+      position: sticky;
+      top: 0;
+      height: 100vh;
+      overflow: hidden;
+      display: flex; align-items: center; justify-content: center;
+      background: var(--dark);
+    }
+
+    /* ── The clipping frame that grows ─────────────
+       Starts as a rounded card, grows to fullscreen.
+       overflow:hidden is the key — it clips the images
+       so the overzoom crops naturally.                 */
+    #zoom-frame {
+      position: relative;
+      width: 58vw;
+      height: 66vh;
+      border-radius: 24px;
+      overflow: hidden;
+      will-change: width, height, border-radius;
+      box-shadow: 0 60px 160px rgba(0,0,0,0.88), 0 0 0 1px rgba(201,168,76,0.13);
+      z-index: 1;
+    }
+
+    /* ── Sequence Images ──────────────────────────── */
+    .seq-img {
+      position: absolute; inset: 0;
+      width: 100%; height: 100%;
+      object-fit: cover;
+      opacity: 0;
+      will-change: transform, opacity;
+      transform: scale(1.1);
+    }
+    
+    #img-ext { z-index: 10; object-position: 68% center; transform-origin: 68% center; }
+    #img-2   { z-index: 11; object-position: center 45%; transform-origin: center 45%; }
+    #img-3   { z-index: 12; }
+    #img-4   { z-index: 13; }
+    #img-5   { z-index: 14; }
+    #img-6   { z-index: 15; }
+    #img-7   { z-index: 16; }
+    #img-8   { z-index: 17; }
+
+    /* ── Bottom vignette that appears at fullscreen ─ */
+    #zoom-vignette {
+      position: absolute; inset: 0; z-index: 3;
+      background: linear-gradient(to bottom, rgba(0,0,0,0) 40%, rgba(8,7,5,0.72) 100%);
+      opacity: 0; pointer-events: none;
+    }
+
+    /* ── Flash overlay for the "door threshold" ────
+       A split-second white/warm flash as you cross     */
+    #door-flash {
+      position: absolute; inset: 0; z-index: 4;
+      background: linear-gradient(135deg, rgba(232,201,122,0.9), rgba(255,255,255,0.95));
+      opacity: 0; pointer-events: none;
+    }
+
+    /* ── Floating info chips ──────────────────────── */
+    .chip {
+      position: absolute;
+      display: flex; align-items: center; gap: 9px;
+      background: rgba(13,11,8,0.65);
+      backdrop-filter: blur(18px); -webkit-backdrop-filter: blur(18px);
+      border: 1px solid rgba(201,168,76,0.22);
+      border-radius: 100px;
+      padding: 9px 16px 9px 12px;
+      pointer-events: none; opacity: 0;
+      white-space: nowrap; z-index: 10;
+    }
+    .chip-dot {
+      width: 7px; height: 7px; border-radius: 50%; background: var(--gold);
+      flex-shrink: 0; box-shadow: 0 0 8px var(--gold);
+    }
+    .chip span { font-size: 12px; font-weight: 600; color: rgba(255,255,255,0.9); }
+
+    #chip-1 { top: 24%; left: 7%; }
+    #chip-2 { bottom: 26%; right: 8%; }
+
+    /* ── Tagline text on interior ─────────────────── */
+    .seq-tagline {
+      position: absolute;
+      bottom: 12%; left: 50%;
+      transform: translateX(-50%) translateY(30px);
+      text-align: center; pointer-events: none;
+      opacity: 0; white-space: nowrap; z-index: 100;
+      width: 90%;
+    }
+    .seq-tagline h2 {
+      font-size: clamp(32px, 4.5vw, 68px);
+      font-weight: 900; letter-spacing: -2px; line-height: 1.1; color: #fff;
+      text-shadow: 0 4px 50px rgba(0,0,0,1), 0 0 100px rgba(0,0,0,0.8);
+    }
+    .seq-tagline p {
+      margin-top: 14px; font-size: clamp(14px, 1.5vw, 20px); font-weight: 500;
+      color: var(--gold-light);
+      text-shadow: 0 2px 20px rgba(0,0,0,1);
+      letter-spacing: 0.5px;
+    }
+
+    /* ─── FEATURES ────────────────────────────────── */
+    #features { position: relative; z-index: 2; padding: 130px 48px; background: var(--dark); }
+    .sec-tag {
+      text-align: center; font-size: 10.5px; font-weight: 700;
+      letter-spacing: 3.5px; text-transform: uppercase; color: var(--gold); margin-bottom: 18px;
+    }
+    h2.sec-title {
+      text-align: center; font-size: clamp(38px, 5.5vw, 68px);
+      font-weight: 900; letter-spacing: -2.5px; line-height: 1.03; color: #fff; margin-bottom: 18px;
+    }
+    .sec-sub {
+      text-align: center; font-size: 17px; color: rgba(255,255,255,0.42);
+      max-width: 520px; margin: 0 auto 80px; line-height: 1.65;
+    }
+    .grid-3 { display: grid; grid-template-columns: repeat(3,1fr); gap: 20px; max-width: 1120px; margin: 0 auto; }
+    .f-card {
+      background: rgba(255,255,255,0.025); border: 1px solid rgba(255,255,255,0.065);
+      border-radius: 22px; padding: 38px 30px;
+      transition: background 0.35s, border-color 0.35s, transform 0.35s;
+    }
+    .f-card:hover { background: rgba(201,168,76,0.055); border-color: rgba(201,168,76,0.22); transform: translateY(-7px); }
+    .f-icon {
+      width: 50px; height: 50px;
+      background: linear-gradient(135deg, rgba(201,168,76,0.14), rgba(201,168,76,0.04));
+      border: 1px solid rgba(201,168,76,0.18); border-radius: 13px;
+      display: flex; align-items: center; justify-content: center; font-size: 22px; margin-bottom: 22px;
+    }
+    .f-name { font-size: 17px; font-weight: 700; color: #fff; margin-bottom: 9px; letter-spacing: -0.3px; }
+    .f-desc { font-size: 13.5px; color: rgba(255,255,255,0.42); line-height: 1.68; }
+
+    /* ─── MANIFESTO ───────────────────────────────── */
+    #manifesto { position: relative; padding: 160px 48px; text-align: center; overflow: hidden; z-index: 2; }
+    #manifesto::before {
+      content: ''; position: absolute; inset: 0;
+      background: radial-gradient(ellipse 70% 60% at 50% 50%, rgba(139,94,60,0.12) 0%, transparent 70%);
+      pointer-events: none;
+    }
+    .mf-rule { width: 1px; height: 72px; background: linear-gradient(to bottom, transparent, var(--gold), transparent); margin: 0 auto 56px; }
+    blockquote.mf-q {
+      font-size: clamp(26px, 4vw, 56px); font-weight: 800; letter-spacing: -2px; line-height: 1.18;
+      color: #fff; max-width: 920px; margin: 0 auto; position: relative; z-index: 1;
+    }
+    blockquote.mf-q em {
+      font-style: normal;
+      background: linear-gradient(130deg, var(--gold), var(--gold-light));
+      -webkit-background-clip: text; -webkit-text-fill-color: transparent; background-clip: text;
+    }
+    .mf-author { margin-top: 36px; font-size: 13px; color: rgba(255,255,255,0.3); letter-spacing: 1.5px; text-transform: uppercase; position: relative; z-index: 1; }
+
+    /* ─── CTA ─────────────────────────────────────── */
+    #cta { padding: 110px 48px 150px; text-align: center; background: var(--dark); position: relative; z-index: 2; }
+    #cta::after {
+      content: ''; position: absolute; bottom: 0; left: 50%; transform: translateX(-50%);
+      width: 700px; height: 350px;
+      background: radial-gradient(ellipse, rgba(201,168,76,0.07) 0%, transparent 70%); pointer-events: none;
+    }
+    h2.cta-h2 { font-size: clamp(42px, 6.5vw, 88px); font-weight: 900; letter-spacing: -3.5px; line-height: 1.02; color: #fff; margin-bottom: 24px; }
+    h2.cta-h2 em { font-style: normal; background: linear-gradient(130deg, var(--gold), var(--gold-light)); -webkit-background-clip: text; -webkit-text-fill-color: transparent; background-clip: text; }
+    .cta-sub { font-size: 17px; color: rgba(255,255,255,0.4); max-width: 440px; margin: 0 auto 48px; line-height: 1.65; }
+    .cta-btns { display: flex; gap: 14px; justify-content: center; flex-wrap: wrap; }
+    .btn-gold {
+      display: inline-flex; align-items: center; gap: 8px;
+      background: linear-gradient(135deg, var(--gold), var(--gold-light));
+      color: var(--dark); font-size: 14.5px; font-weight: 700; padding: 16px 38px; border-radius: 100px;
+      text-decoration: none; letter-spacing: -0.2px; transition: transform 0.25s, box-shadow 0.25s;
+    }
+    .btn-gold:hover { transform: scale(1.05); box-shadow: 0 20px 60px rgba(201,168,76,0.3); }
+    .btn-ghost {
+      display: inline-flex; align-items: center; gap: 8px;
+      background: rgba(255,255,255,0.065); border: 1px solid rgba(255,255,255,0.11);
+      color: #fff; font-size: 14.5px; font-weight: 600; padding: 16px 38px; border-radius: 100px;
+      text-decoration: none; letter-spacing: -0.2px; transition: background 0.25s, border-color 0.25s, transform 0.25s;
+    }
+    .btn-ghost:hover { background: rgba(255,255,255,0.11); border-color: rgba(255,255,255,0.22); transform: scale(1.03); }
+
+    /* ─── FOOTER ──────────────────────────────────── */
+    footer {
+      border-top: 1px solid rgba(255,255,255,0.055); padding: 36px 48px;
+      display: flex; align-items: center; justify-content: space-between; flex-wrap: wrap; gap: 14px;
+      background: var(--dark); position: relative; z-index: 2;
+    }
+    .ft-logo { font-size: 15px; font-weight: 700; color: rgba(255,255,255,0.38); }
+    .ft-logo span { color: var(--gold); }
+    .ft-copy { font-size: 11.5px; color: rgba(255,255,255,0.2); text-align: center; }
+    .ft-links { display: flex; gap: 22px; }
+    .ft-links a { font-size: 11.5px; color: rgba(255,255,255,0.3); text-decoration: none; transition: color 0.2s; }
+    .ft-links a:hover { color: var(--gold); }
+
+    /* ─── SCROLL REVEALS ──────────────────────────── */
+    .reveal { opacity: 0; transform: translateY(36px); transition: opacity 0.9s cubic-bezier(0.22,1,0.36,1), transform 0.9s cubic-bezier(0.22,1,0.36,1); }
+    .reveal.on { opacity: 1; transform: translateY(0); }
+    .rd1 { transition-delay: 0.08s; } .rd2 { transition-delay: 0.16s; } .rd3 { transition-delay: 0.24s; }
+  </style>
+</head>
+<body>
+
+
+<!-- ══ ZOOM SEQUENCE ═══════════════════════════════ -->
+<section id="zoom-track" style="height: 2000vh;">
+  <div id="zoom-stage">
+
+    <!-- Clipping frame — grows from card to fullscreen -->
+    <div id="zoom-frame">
+      <img src="imagen-3.png"   id="img-ext" alt="Pantry Chef Logo" />
+      <img src="imagen-4.png"   id="img-2"   class="seq-img" alt="Product Showcase" />
+      <img src="imagen-5.png"   id="img-3"   class="seq-img" alt="Artisan Quality" />
+      <img src="imagen-6.png"   id="img-4"   class="seq-img" alt="Direct Service" />
+      <img src="imagen-7.png"   id="img-5"   class="seq-img" alt="Urban Vibe" />
+      <img src="imagen-8.png"   id="img-6"   class="seq-img" alt="Final Experience" />
+      <img src="main-image.jpg" id="img-7"   class="seq-img" alt="Exterior Pantry Chef" />
+      <img src="imagen-2.png"   id="img-8"   class="seq-img" alt="Interior Details" />
+
+      <!-- Bottom vignette -->
+      <div id="zoom-vignette"></div>
+      <!-- Door-crossing flash -->
+      <div id="door-flash"></div>
+    </div>
+
+    <!-- Floating chips (over exterior) -->
+    <div class="chip" id="chip-1">
+      <div class="chip-dot"></div>
+      <span>Diseño modular · Madera noble</span>
+    </div>
+    <div class="chip" id="chip-2">
+      <div class="chip-dot"></div>
+      <span>Producto artesano · Menú del día</span>
+    </div>
+
+    <!-- Sequential Taglines -->
+    <div class="seq-tagline" id="tag-2">
+      <h2>Sabor real</h2>
+      <p>Sin artificios, solo el mejor producto.</p>
+    </div>
+    <div class="seq-tagline" id="tag-4">
+      <h2>Experiencia callejera</h2>
+      <p>Elevando el concepto de Street Marketing.</p>
+    </div>
+    <div class="seq-tagline" id="tag-7">
+      <h2>En el corazón de la ciudad</h2>
+      <p>Búscanos en las calles más vibrantes.</p>
+    </div>
+    <div class="seq-tagline" id="tag-8">
+      <h2>Bienvenido a Pantry Chef</h2>
+      <p>¿Estrés por el almuerzo? Aquí te salvamos.</p>
+    </div>
+
+  </div>
+</section>
+
+
+
+<!-- ══ CTA ═════════════════════════════════════════ -->
+<section id="cta">
+  <h2 class="cta-h2 reveal">¿Listo para<br/><em>probarnos?</em></h2>
+  <p class="cta-sub reveal rd1">Abierto de lunes a viernes, 11:00–16:00. Sin reserva. Sin espera.</p>
+  <div class="cta-btns reveal rd2">
+    <a href="#" class="btn-gold" id="cta-visit-btn">📍 Cómo llegar</a>
+    <a href="#" class="btn-ghost" id="cta-menu-btn">🍽️ Ver el menú</a>
+  </div>
+</section>
+
+
+<!-- ══ FOOTER ══════════════════════════════════════ -->
+<footer>
+  <div class="ft-logo">Pantry<span>Chef</span></div>
+  <p class="ft-copy">© 2025 Pantry Chef · Street Marketing · Madrid</p>
+  <div class="ft-links">
+    <a href="#">Instagram</a>
+    <a href="#">TikTok</a>
+    <a href="#">Contacto</a>
+  </div>
+</footer>
+
+
+<script>
+/* ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+   NAVBAR
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ */
+const navbar = document.getElementById('navbar');
+window.addEventListener('scroll', () => {
+  navbar.classList.toggle('scrolled', window.scrollY > 50);
+}, { passive: true });
+
+
+/* ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+   CINEMATIC ZOOM SEQUENCE
+   ─────────────────────────────────────────────────
+   700vh scroll track → 6 precise phases
+
+   PHASE 1  [0.00 → 0.45]  Card expands to fullscreen
+            Frame: 58vw×66vh → 100vw×100vh
+            Border-radius: 24 → 0
+            img-ext counter-zooms: 1.10 → 1.00
+
+   PHASE 2  [0.45 → 0.58]  Chips appear
+            chip-1 slides from left, chip-2 from right
+
+   PHASE 3  [0.55 → 0.70]  Exterior OVER-ZOOM toward door
+            img-ext zooms 1.00 → 1.80 (transform-origin: door)
+            Frame stays fullscreen — image crops naturally
+            This looks like walking toward the entrance
+
+   PHASE 4  [0.68 → 0.74]  Door-crossing flash
+            A warm golden flash — like stepping into light
+
+   PHASE 5  [0.72 → 0.86]  Cross-fade to interior
+            img-ext fades out (stays overzoomed)
+            img-int fades in from scale 1.6 → 1.0
+            (corridor perspective pulls toward mirror)
+            Chips also fade away in this phase
+
+   PHASE 6  [0.86 → 0.97]  Tagline appears on interior
+            "Bienvenido a Pantry Chef"
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ */
+
+const track    = document.getElementById('zoom-track');
+const frame    = document.getElementById('zoom-frame');
+const imgExt   = document.getElementById('img-ext');
+const vignette = document.getElementById('zoom-vignette');
+const flash    = document.getElementById('door-flash');
+const chip1    = document.getElementById('chip-1');
+const chip2    = document.getElementById('chip-2');
+
+// Collection of images and taglines
+const images   = [
+  document.getElementById('img-2'),
+  document.getElementById('img-3'),
+  document.getElementById('img-4'),
+  document.getElementById('img-5'),
+  document.getElementById('img-6'),
+  document.getElementById('img-7'),
+  document.getElementById('img-8')
+];
+
+const tags = {
+  2: document.getElementById('tag-2'),
+  4: document.getElementById('tag-4'),
+  7: document.getElementById('tag-7'),
+  8: document.getElementById('tag-8')
+};
+
+/* ── Easing ──────────────────────────────────────── */
+const ease = {
+  inOutQuart : t => t < 0.5 ? 8*t*t*t*t : 1 - Math.pow(-2*t+2,4)/2,
+  outExpo    : t => t >= 1 ? 1 : 1 - Math.pow(2,-10*t),
+  outCubic   : t => 1 - Math.pow(1-t,3),
+  inQuart    : t => t*t*t*t,
+  inOutSine  : t => -(Math.cos(Math.PI*t)-1)/2,
+};
+
+function lerp(a,b,t)     { return a + (b-a)*t; }
+function clamp(v,lo,hi)  { return Math.min(Math.max(v,lo),hi); }
+function map(v,a,b,c,d)  { return lerp(c,d,clamp((v-a)/(b-a),0,1)); }
+
+/* ── State ───────────────────────────────────────── */
+let raf = false;
+
+function tick() {
+  const vw = window.innerWidth;
+  const vh = window.innerHeight;
+  const rect = track.getBoundingClientRect();
+  const maxScroll = track.offsetHeight - vh;
+  const raw = clamp(-rect.top / maxScroll, 0, 1);
+
+  /* ══ PHASE 1: Card → Fullscreen (0.00 - 0.15) ══════ */
+  const p1 = ease.inOutQuart(map(raw, 0.0, 0.15, 0, 1));
+  const fw = lerp(0.58 * vw, vw,  p1);
+  const fh = lerp(0.66 * vh, vh,  p1);
+  frame.style.width        = fw + 'px';
+  frame.style.height       = fh + 'px';
+  frame.style.borderRadius = lerp(24, 0, p1) + 'px';
+
+  const sh = 1 - p1;
+  frame.style.boxShadow = sh > 0.01
+    ? `0 ${lerp(0,60,sh)}px ${lerp(0,160,sh)}px rgba(0,0,0,${0.88*sh}), 0 0 0 1px rgba(201,168,76,${0.13*sh})`
+    : 'none';
+
+  /* ══ img-ext counter-zoom (0.00 - 0.20) ═══════════ */
+  let extScale = lerp(1.10, 1.00, ease.inOutSine(map(raw, 0.0, 0.15, 0, 1)));
+  const p3 = ease.inQuart(map(raw, 0.15, 0.25, 0, 1));
+  extScale = lerp(extScale, 1.85, p3);
+  imgExt.style.transform = `scale(${extScale})`;
+  imgExt.style.opacity   = 1 - map(raw, 0.24, 0.30, 0, 1);
+
+  /* ══ Chips (0.10 - 0.22) ══════════════════════════ */
+  const c1In  = ease.outExpo(map(raw, 0.08, 0.16, 0, 1));
+  const c1Out = ease.outCubic(map(raw, 0.20, 0.26, 0, 1));
+  chip1.style.opacity   = c1In * (1 - c1Out);
+  chip1.style.transform = `translateX(${lerp(-20,0,c1In)}px)`;
+
+  const c2In  = ease.outExpo(map(raw, 0.11, 0.19, 0, 1));
+  const c2Out = ease.outCubic(map(raw, 0.22, 0.28, 0, 1));
+  chip2.style.opacity   = c2In * (1 - c2Out);
+  chip2.style.transform = `translateX(${lerp(20,0,c2In)}px)`;
+
+  /* ══ Door Flash (0.23 - 0.27) ═════════════════════ */
+  const flashCenter = 0.25;
+  const flashWidth  = 0.02;
+  const flashRaw    = Math.max(0, 1 - Math.pow((raw - flashCenter) / flashWidth, 2));
+  flash.style.opacity = clamp(flashRaw, 0, 1) * 0.8;
+
+  /* ══ Sequential Gallery (0.25 - 1.0) ══════════════ */
+  // We have 7 images (img-2 to img-8)
+  // Let's divide the remaining space (0.25 to 1.0) into intervals
+  const startVal = 0.25;
+  const endVal   = 0.98;
+  const step     = (endVal - startVal) / images.length;
+
+  images.forEach((img, index) => {
+    const imgStart = startVal + (index * step);
+    const imgEnd   = imgStart + step;
+    
+    // Fade in / Fade out
+    // It appears at imgStart and starts fading out for next one
+    const pIn  = ease.outCubic(map(raw, imgStart, imgStart + (step * 0.2), 0, 1));
+    const pOut = index === images.length - 1 ? 0 : ease.outCubic(map(raw, imgEnd - (step * 0.2), imgEnd, 0, 1));
+    
+    img.style.opacity = pIn * (1 - pOut);
+    
+    // Parallax Zoom
+    const scale = lerp(1.3, 1.0, ease.outCubic(map(raw, imgStart, imgEnd + step, 0, 1)));
+    img.style.transform = `scale(${scale})`;
+  });
+
+  /* ══ Taglines Mapping ════════════════════════════ */
+  Object.keys(tags).forEach(num => {
+    const n = parseInt(num);
+    // Approximate index in images array is n-2
+    const idx = n - 2;
+    const tagStart = startVal + (idx * step);
+    const tagEnd   = tagStart + step;
+    
+    const tIn  = ease.outExpo(map(raw, tagStart + (step * 0.1), tagStart + (step * 0.5), 0, 1));
+    const tOut = ease.outCubic(map(raw, tagEnd - (step * 0.2), tagEnd, 0, 1));
+    
+    const tag = tags[num];
+    tag.style.opacity = tIn * (1 - tOut);
+    tag.style.transform = `translateX(-50%) translateY(${lerp(30, 0, tIn)}px)`;
+  });
+
+  /* ══ Vignette ════════════════════════════════════ */
+  vignette.style.opacity = map(raw, 0.1, 0.3, 0, 1);
+
+  raf = false;
+}
+
+window.addEventListener('scroll', () => {
+  if (!raf) { raf = true; requestAnimationFrame(tick); }
+}, { passive: true });
+window.addEventListener('resize', tick, { passive: true });
+tick();
+
+
+/* ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+   SCROLL REVEALS
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ */
+const revObs = new IntersectionObserver(
+  entries => entries.forEach(e => { if (e.isIntersecting) e.target.classList.add('on'); }),
+  { threshold: 0.12 }
+);
+document.querySelectorAll('.reveal').forEach(el => revObs.observe(el));
+</script>
+</body>
+</html>
